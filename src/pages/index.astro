@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import Header from '../components/Header.astro';
+import Loader from '../components/Loader.astro';
+
+---
+
+<Layout title="Welcome to Astro.">
+	<main>
+		<Header></Header>
+		<Card title="Titulo" body="body" href="https://youtube.com"></Card>
+		<Card title="Titulo" body="body" href="https://youtube.com"></Card> 
+		<Card title="Titulo" body="body" href="https://youtube.com"></Card> 
+		<div class="flex justify-center">
+			<Loader></Loader>
+		</div>
+	</main>
+</Layout>
+
+<style>
+	
+</style>
