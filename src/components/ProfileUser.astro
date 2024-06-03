@@ -1,0 +1,32 @@
+---
+interface Props {
+  isUser: boolean;
+  message: string;
+}
+
+const { isUser, message } = Astro.props;
+---
+
+<div
+  class={`w-full flex items-center ${isUser ? "justify-start" : "justify-end"}`}
+>
+  {
+    !isUser ? (
+      <>
+        <div class="bg-gray-400 border-4 border-gray-500 mx-6 p-3 rounded-md shadow-lg">
+          {message}
+        </div>
+        <div class="bg-blue-800 w-[60px] h-[60px] rounded-full">
+        </div>
+      </>
+    ) : (
+      <>
+        <div class="bg-red-800 w-[60px] h-[60px] rounded-full">
+        </div>
+        <div class="bg-gray-400 border-4 border-gray-500 mx-6 p-3 rounded-md shadow-lg">
+          {message}
+        </div>
+      </>
+    )
+  }
+</div>

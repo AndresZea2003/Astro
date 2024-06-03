@@ -1,7 +1,14 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import LayoutSquare from "../layouts/LayoutSquare.astro";
+import ChatBot from "../components/ChatBot.vue";
+
 ---
 
-<Layout title="chatbot">
-  <h1>Hello, Astro!</h1>
-</Layout>
+<LayoutSquare title="chatbot">
+
+  <div>
+    <ChatBot client:visible/>
+  </div>
+</LayoutSquare>
+
+<style></style>
