@@ -78,6 +78,7 @@ const sendMessage = () => {
 };
 </script>
 <template>
+  token: {{ token }}
   <div class="container mx-auto p-4 min-h-screen flex flex-col">
     <div
       class="bg-[#C73659] border-4 border-[#A91D3A] rounded p-4 mx-auto w-full"
