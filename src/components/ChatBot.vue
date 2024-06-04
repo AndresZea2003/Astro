@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import axios from "axios";
 import ProfileUser from "./ProfileUser.vue";
 
@@ -20,7 +20,7 @@ const allowNewLine = (event) => {
 const handleKeyDown = (event) => {
   if (event.key === "Enter" && !event.shiftKey) {
     event.preventDefault();
-    sendMessage();
+    fetchStream();
   }
 };
 
@@ -76,6 +76,63 @@ const sendMessage = () => {
   rows.value = 1;
   message.value = "";
 };
+
+let res = ref("");
+const go = async () => {
+  const response = await axios.get("/api/data.json");
+  res.value = response.data;
+};
+
+let inStream = ref(false);
+
+const fetchStream = async () => {
+  let input = document.getElementById("message");
+  messages.value.push({
+    isUser: true,
+    message: input.value,
+  });
+
+  try {
+    // const response = await fetch("/api/data.json");
+    const response = await fetch('/api/data.json', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ input: input.value})
+    });
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    inStream.value = true;
+
+    let result = "";
+    const readStream = async () => {
+      const { done, value } = await reader.read();
+      if (done) {
+        inStream.value = false;
+        return;
+      }
+      result += decoder.decode(value, { stream: true });
+      res.value = result;
+      await readStream();
+    };
+
+    await readStream();
+  } catch (error) {
+    console.error("Error fetching stream:", error);
+  } finally {
+    inStream.value = false;
+
+    messages.value.push({
+      isUser: false,
+      message: res.value,
+    });
+
+    input.value = "";
+    rows.value = 1;
+    message.value = "";
+  }
+};
 </script>
 <template>
   <div class="container mx-auto p-4 min-h-screen flex flex-col">
@@ -105,7 +162,15 @@ const sendMessage = () => {
               :message="msg.message"
               style="white-space: pre-wrap"
             />
+
           </div>
+
+          <ProfileUser
+              v-if="inStream"
+              :isUser="false"
+              :message="res"
+              style="white-space: pre-wrap"
+            />
         </div>
 
         <div

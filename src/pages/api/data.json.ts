@@ -1,18 +1,39 @@
 import type { APIContext } from "astro";
-import { Openai } from "../../function/Openai";
+import OpenAI from "openai";
 
-export async function GET({
-  request,
-  url,
-  cookies,
-}: APIContext): Promise<Response> {
-  // return Response.json({
-  //   success: true,
-  //   result: "Data from Astro Endpoint!",
-  // });
+export async function POST({ request }: APIContext): Promise<Response> {
+  const openai = new OpenAI({
+    apiKey: import.meta.env.PUBLIC_OPENAI_API_KEY,
+  });
 
-  return new Response(
-    JSON.stringify({ success: true, result: Openai() }),
-    { headers: { "Content-Type": "application/json" } }
-  );
+  const requestBody = await request.json();
+  console.log(requestBody.input);
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      try {
+        const openaiStream = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: requestBody.input }],
+          stream: true,
+        });
+
+        for await (const chunk of openaiStream) {
+          const content = chunk.choices[0]?.delta?.content || "";
+          const encoder = new TextEncoder();
+          controller.enqueue(encoder.encode(content));
+        }
+        controller.close();
+      } catch (err) {
+        console.error(err);
+        controller.error(err);
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/plain",
+    },
+  });
 }
