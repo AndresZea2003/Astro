@@ -1,4 +1,8 @@
 <script setup>
+import hljs from "highlight.js";
+import "highlight.js/styles/default.css";
+import { defineProps, onMounted, nextTick, ref, watchEffect } from "vue";
+
 const props = defineProps({
   isUser: {
     type: Boolean,
@@ -8,6 +12,25 @@ const props = defineProps({
     type: String,
     required: true,
   },
+});
+
+let processedMessage = ref(props.message);
+
+const highlightCode = async () => {
+  console.log(typeof document !== "undefined");
+  if (typeof document !== "undefined") {
+    await nextTick();
+    document.querySelectorAll("pre code").forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  }
+};
+
+onMounted(highlightCode);
+
+watchEffect(() => {
+  processedMessage.value = props.message;
+  highlightCode();
 });
 </script>
 
@@ -20,9 +43,23 @@ const props = defineProps({
       }`"
     >
       <div
+        style="max-width: 60%; word-wrap: break-word; overflow-wrap: break-word"
         class="bg-gray-400 border-4 border-gray-500 mx-6 p-3 rounded-md shadow-lg"
       >
-        {{ props.message }}
+        <div>
+          <template v-if="processedMessage.includes('<pre><code>')">
+            <pre
+              style="white-space: pre-wrap; word-break: break-word"
+              v-html="processedMessage"
+            ></pre>
+          </template>
+
+          <template v-else>
+            <p style="white-space: pre-wrap; word-break: break-word">
+              {{ props.message }}
+            </p>
+          </template>
+        </div>
       </div>
       <div
         style="
@@ -55,9 +92,23 @@ const props = defineProps({
         class="bg-red-800 rounded-full"
       ></div>
       <div
+        style="max-width: 60%; word-wrap: break-word; overflow-wrap: break-word"
         class="bg-gray-400 border-4 border-gray-500 mx-6 p-3 rounded-md shadow-lg"
       >
-        {{ props.message }}
+        <div>
+          <template v-if="processedMessage.includes('<pre><code>')">
+            <pre
+              style="white-space: pre-wrap; word-break: break-word"
+              v-html="processedMessage"
+            ></pre>
+          </template>
+
+          <template v-else>
+            <p style="white-space: pre-wrap; word-break: break-word">
+              {{ props.message }}
+            </p>
+          </template>
+        </div>
       </div>
     </div>
   </div>

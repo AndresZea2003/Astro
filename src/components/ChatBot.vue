@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import axios from "axios";
 import ProfileUser from "./ProfileUser.vue";
 
@@ -27,7 +27,11 @@ const handleKeyDown = (event) => {
 let messages = ref([
   {
     isUser: false,
-    message: "Hola! Soy un mensaje de prueba",
+    message: `Hola! Soy un chatBOT, actualmente Andres Zea me ha agregado las funcionaliadades de:
+  - Envio de mensajes
+  - Envio de mensajes con bloques de código
+  - Envio de mensajes con bloques de código y resaltado de sintaxis
+  - Env`,
   },
 ]);
 
@@ -94,12 +98,12 @@ const fetchStream = async () => {
 
   try {
     // const response = await fetch("/api/data.json");
-    const response = await fetch('/api/data.json', {
-      method: 'POST',
+    const response = await fetch("/api/data.json", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ input: input.value})
+      body: JSON.stringify({ input: input.value }),
     });
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -128,10 +132,26 @@ const fetchStream = async () => {
       message: res.value,
     });
 
+    nextTick(() => {
+      document.querySelectorAll("pre code").forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+
     input.value = "";
     rows.value = 1;
     message.value = "";
   }
+};
+
+const processMessage = (message) => {
+  // Usamos una expresión regular para encontrar bloques de código delimitados por ```
+  const codeBlockRegex = /```([\s\S]*?)```/g;
+
+  // Reemplazamos los bloques de código con <pre><code>
+  return message.replace(codeBlockRegex, (match, p1) => {
+    return `<pre><code>${p1}</code></pre>`;
+  });
 };
 </script>
 <template>
@@ -156,21 +176,21 @@ const fetchStream = async () => {
         class="bg-[#EEEEEE] border-2 border-[#C73659] p-6 rounded-md col-span-3 flex flex-col overflow-y-auto justify-between"
       >
         <div class="overflow-y-auto flex-grow">
-          <div v-for="msg in messages">
+          <div v-for="msg in messages" :key="msg.message">
             <ProfileUser
               :isUser="msg.isUser"
-              :message="msg.message"
+              :message="processMessage(msg.message)"
               style="white-space: pre-wrap"
-            />
-
+            >
+            </ProfileUser>
           </div>
 
           <ProfileUser
-              v-if="inStream"
-              :isUser="false"
-              :message="res"
-              style="white-space: pre-wrap"
-            />
+            v-if="inStream"
+            :isUser="false"
+            :message="res"
+            style="white-space: pre-wrap"
+          />
         </div>
 
         <div
