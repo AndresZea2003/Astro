@@ -1,24 +1,29 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
-import Header from '../components/Header.astro';
-import Loader from '../components/Loader.astro';
-
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+import Header from "../components/Header.astro";
+import Loader from "../components/Loader.astro";
+import NewLoader from "../components/buttons/NewLoader.astro";
 ---
 
 <Layout title="Welcome to Astro.">
-	<main>
-		<Header></Header>
-		<Card title="Titulo" body="body" href="https://youtube.com"></Card>
-		<Card title="Titulo" body="body" href="https://youtube.com"></Card> 
-		<Card title="Titulo" body="body" href="https://youtube.com"></Card> 
-		<div class="flex justify-center">
-			<Loader></Loader>
-		</div>
-		<a href="/chatbot">Ir al chatbot</a>
-	</main>
+  <main>
+    <Header />
+    <Card title="Titulo" body="body" href="https://youtube.com" />
+    <Card title="Titulo" body="body" href="https://youtube.com" />
+    <Card title="Titulo" body="body" href="https://youtube.com" />
+    <div class="flex justify-center">
+      <Loader />
+    </div>
+    <a href="/chatbot">Ir al chatbot</a>
+
+    <div class="grid grid-cols-4">
+      <NewLoader tittle="Epicardo" />
+      <NewLoader tittle="Finoli" />
+      <NewLoader tittle="Experto" />
+      <NewLoader tittle="Pavogranaino" />
+    </div>
+  </main>
 </Layout>
 
-<style>
-	
-</style>
+<style></style>
