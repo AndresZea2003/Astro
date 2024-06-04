@@ -1,18 +1,18 @@
-import type { APIRoute } from 'astro';
+import type { APIContext } from "astro";
+import { Openai } from "../../function/Openai";
 
-export const GET: APIRoute = ({ params, request}) => {
-  return Response.json({
-    success: true,
-    result: 'API EPICARDA'
-  });
-  return {
-    status: 200,
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({
-        "name": "John Doe",
-        "age": 25
-    })
-  };
+export async function GET({
+  request,
+  url,
+  cookies,
+}: APIContext): Promise<Response> {
+  // return Response.json({
+  //   success: true,
+  //   result: "Data from Astro Endpoint!",
+  // });
+
+  return new Response(
+    JSON.stringify({ success: true, result: Openai() }),
+    { headers: { "Content-Type": "application/json" } }
+  );
 }
