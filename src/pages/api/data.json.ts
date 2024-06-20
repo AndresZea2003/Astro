@@ -34,6 +34,7 @@ export async function POST({ request }: APIContext): Promise<Response> {
   return new Response(stream, {
     headers: {
       "Content-Type": "text/plain",
+      "Access-Control-Allow-Origin": "*",
     },
   });
 }
