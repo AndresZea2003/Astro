@@ -59,13 +59,13 @@ const loader = new PuppeteerWebBaseLoader("https://docs.placetopay.dev/checkout/
         // Extrae solo las partes importantes de la documentación
         return await page.evaluate(() => {
             // Selecciona los elementos que contienen la información relevante
-            const relevantSections = document.querySelectorAll('main h1, main h2, main p, main ul, main pre');
+            // const relevantSections = document.querySelectorAll('main h1, main h2, main p, main ul, main pre');
 
             // Recorre los elementos seleccionados y construye un texto con ellos
             let importantContent = '';
-            relevantSections.forEach(section => {
-                importantContent += section.outerHTML + '\n';
-            });
+            // relevantSections.forEach(section => {
+            //     importantContent += section.outerHTML + '\n';
+            // });
 
             return importantContent;
         });
@@ -90,9 +90,7 @@ const llm = new ChatOllama({
 const prompt = ChatPromptTemplate.fromMessages([
     [
         "system",
-        "You are a recommender of minecraft emotes from our store: suggest only the emotes that we have, only respond in spanish\n" +
-        "\n" +
-        "Our emotes are" + docs[0].pageContent,
+        "Resume: " + docs[0].pageContent,
     ],
     ["human", "{input}"],
 ]);
@@ -100,7 +98,7 @@ const prompt = ChatPromptTemplate.fromMessages([
 let chain = prompt.pipe(llm)
 
 const stream = await chain.stream({
-    input: 'Tengo poco dinero, que emote me recomiendas?'
+    input: 'Resume'
 });
 
 for await (const chunk of stream) {
