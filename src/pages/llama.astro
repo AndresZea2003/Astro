@@ -1,0 +1,13 @@
+---
+import TestIA from "../components/TestIA.vue";
+import LayoutSquare from "../layouts/LayoutSquare.astro";
+---
+
+<LayoutSquare title="llama">
+    <main>
+        <div class="bg-amber-400 w-full"></div>
+        <TestIA client:visible></TestIA>
+    </main>
+</LayoutSquare>
+
+<style></style>
