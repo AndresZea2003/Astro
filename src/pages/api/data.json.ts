@@ -7,7 +7,6 @@ export async function POST({ request }: APIContext): Promise<Response> {
   });
 
   const requestBody = await request.json();
-  console.log(requestBody.input);
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -30,6 +29,8 @@ export async function POST({ request }: APIContext): Promise<Response> {
       }
     },
   });
+
+  console.log("stream", stream);
 
   return new Response(stream, {
     headers: {

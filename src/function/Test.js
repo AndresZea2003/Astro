@@ -52,30 +52,30 @@ const openaiApiKey = process.env.PUBLIC_OPENAI_API_KEY;
 
 // -------
 
-import { PuppeteerWebBaseLoader } from "@langchain/community/document_loaders/web/puppeteer";
-
-const loader = new PuppeteerWebBaseLoader("https://docs.placetopay.dev/checkout/create-session", {
-    evaluate: async (page) => {
-        // Extrae solo las partes importantes de la documentación
-        return await page.evaluate(() => {
-            // Selecciona los elementos que contienen la información relevante
-            // const relevantSections = document.querySelectorAll('main h1, main h2, main p, main ul, main pre');
-
-            // Recorre los elementos seleccionados y construye un texto con ellos
-            let importantContent = '';
-            // relevantSections.forEach(section => {
-            //     importantContent += section.outerHTML + '\n';
-            // });
-
-            return importantContent;
-        });
-    },
-});
-
-
-const docs = await loader.load();
-
-console.log(docs[0].pageContent);
+// import { PuppeteerWebBaseLoader } from "@langchain/community/document_loaders/web/puppeteer";
+//
+// const loader = new PuppeteerWebBaseLoader("https://docs.placetopay.dev/checkout/create-session", {
+//     evaluate: async (page) => {
+//         // Extrae solo las partes importantes de la documentación
+//         return await page.evaluate(() => {
+//             // Selecciona los elementos que contienen la información relevante
+//             // const relevantSections = document.querySelectorAll('main h1, main h2, main p, main ul, main pre');
+//
+//             // Recorre los elementos seleccionados y construye un texto con ellos
+//             let importantContent = '';
+//             // relevantSections.forEach(section => {
+//             //     importantContent += section.outerHTML + '\n';
+//             // });
+//
+//             return importantContent;
+//         });
+//     },
+// });
+//
+//
+// const docs = await loader.load();
+//
+// console.log(docs[0].pageContent);
 
 import { ChatOllama } from "@langchain/ollama";
 import {ChatPromptTemplate} from "@langchain/core/prompts";
@@ -84,13 +84,13 @@ const llm = new ChatOllama({
     model: "llama3.1",
     temperature: 0,
     maxRetries: 2,
-    // other params...
 });
 
 const prompt = ChatPromptTemplate.fromMessages([
     [
         "system",
-        "Resume: " + docs[0].pageContent,
+        // "Resume: " + docs[0].pageContent,
+        "Eres un poeta experto llamado billy"
     ],
     ["human", "{input}"],
 ]);
@@ -98,7 +98,7 @@ const prompt = ChatPromptTemplate.fromMessages([
 let chain = prompt.pipe(llm)
 
 const stream = await chain.stream({
-    input: 'Resume'
+    input: 'inspirame'
 });
 
 for await (const chunk of stream) {

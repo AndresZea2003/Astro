@@ -105,6 +105,7 @@ const fetchStream = async () => {
       },
       body: JSON.stringify({ input: input.value }),
     });
+
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     inStream.value = true;
@@ -142,6 +143,7 @@ const fetchStream = async () => {
     rows.value = 1;
     message.value = "";
   }
+
 };
 
 const processMessage = (message) => {
